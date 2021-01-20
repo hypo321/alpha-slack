@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body { background:cornflowerblue;
+        text-align: center;
+        font-family: Arial, Helvetica, sans-serif;
+           }
+        input[type=text] {
+            width: 100%;
+            padding: 12px 20px;
+            margin: 8px 0;
+            box-sizing: border-box;
+        }
+        
+        div { display: flex;
+          align-items: center;
+    justify-content: center;
+        }
+
+        div.content { display: flex;
+        flex-direction: column;
+        max-width:1000px;
+        margin: auto;
+        align-items: center;
+    justify-content: center;
+        }
+
+        fieldset { 
+          text-align:left;
+          font-size:small;
+        margin: 3em 1em;
+        display: none;
+        border:2px solid rgb(110, 110, 175) /* Border width, style and colour */
+        }
+
+        div.preview {
+          font-size:large; 
+        display:flex;
+        flex-wrap:wrap
+        }
+
+
+        div.word { 
+        margin: 0.5em 1em;
+        flex-direction: row; 
+        }
+
+        img.letter { width: 2em
+        }
+
+        form {
+          display: flex;
+          flex-direction: row;
+          width:100%;
+          vertical-align: top;
+        }
+
+        h1 { margin-bottom: 2em;
+        margin-top: 2em;
+        display: flex;
+        flex-wrap: wrap;
+        width: 100%;
+        align-items: center;
+    justify-content: center;
+        }
+
+
+        a {
+            cursor: pointer !important;
+        }
+        .button2 {
+            display:inline-block;
+            padding:1em 3em;
+            border:0.16em solid #FFFFFF;
+            margin:0.6em 0 0.6em 0;
+            box-sizing: border-box;
+            text-decoration:none;
+            background-color:darkorange;
+            text-transform:uppercase;
+            font-family:'Roboto',sans-serif;
+            font-weight:400;
+            color:#FFFFFF;
+            text-align:center;
+            transition: all 0.15s;
+        }
+        .button2:hover {
+        color:#DDDDDD;
+        border-color:#DDDDDD;
+        }
+        .button2:active{
+            color:#BBBBBB;
+            border-color:#BBBBBB;
+        }
+
+
+}
+    </style>
+</head> 
+<script>
+
+// your form
+
+
+  function convert(e) {
+    e.preventDefault()
+    var input = document.getElementById("myInput");
+    var copyText = document.getElementById("myOutput");
+    var preview = document.getElementById("preview");
+    var previewArea = preview.parentElement;
+
+    copyText.value=slackAlpha(input.value)
+    preview.innerHTML=writeSentence(input.value)
+    previewArea.style.display='block'
+
+    copyText.select();
+    copyText.setSelectionRange(0, 99999)
+    document.execCommand("copy");
+    input.select();
+    input.setSelectionRange(0, 99999)
+  }
+
+  function writeSentence(sentence) {
+    return sentence.split(" ").map(word=>{
+      return "<div class='word'>" + word.split("").map(char=>
+     '<img class="letter" src="' + replaceBasic(char) + '.png">').join("") + "</div>"
+    }).join("")
+    
+  }
+  
+  function slackAlpha(cell) {
+      return cell.toString().split('').map(replaceAlpha).join('');
+    }
+    
+    function replaceAlpha(character) {
+      if(shouldConvert(character)) {
+        return ':alphabet-white-'+character+':';
+      }
+      else if (character==='!') {
+        return ":alphabet-white-exclamation:"
+      }
+      else if (character==='?') {
+        return ":alphabet-white-question:"
+      }
+        else if (character==='#') {
+        return ":alphabet-white-hash:"
+      }
+          else if (character===' ') {
+        return "    "
+      }
+        else {
+        return "**" + character + "**"
+      }
+    
+    }
+
+    function replaceBasic(character) {
+      if(shouldConvert(character)) {
+        return character;
+      }
+      else if (character==='!') {
+        return "exclamation"
+      }
+      else if (character==='?') {
+        return "question"
+      }
+        else if (character==='#') {
+        return "hash"
+      }
+          else if (character===' ') {
+        return "space"
+      }
+        else {
+        return "**" + character + "**"
+      }
+    
+    }
+
+    
+    function shouldConvert(char) {
+      var code;
+        code = char.toLowerCase().charCodeAt(0);
+        if (!(code > 96 && code < 123)) { // lower alpha (a-z)
+          return false;
+        }
+      return true;
+    };
+  </script>  
+<body>
+
+    <div class="content"><h1>
+      <script>
+        document.write(writeSentence("SLACK CONVERTER"))
+        
+       </script></h1>
+      
+       <form id="form">
+        <input type="text" placeholder="Enter the text that you want to convert here" id="myInput"><input class="button2" type="submit" value="Convert and copy to clipboard">
+      </form>
+        <input  type="text" placeholder="Converted text will show up here and be copied to your clipboard" id="myOutput">
+        
+      
+      <fieldset id="preview-area">
+        <legend>Preview</legend>
+        <div class="preview" id="preview"></div>
+        </fieldset>
+        
+    </div>
+
+<script>
+  var form = document.getElementById("form");
+
+// attach event listener
+form.addEventListener("submit", convert, true);
+</script>
+
+
+
+</body>
+</html>
+
+
+
+
+  
