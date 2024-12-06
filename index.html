@@ -123,7 +123,7 @@
   function writeSentence(sentence) {
     return sentence.split(" ").map(word=>{
       return "<div class='word'>" + word.split("").map(char=>
-     '<img class="letter" src="' + replaceBasic(char) + '.png">').join("") + "</div>"
+     '<img class="letter" src="' + replaceBasic(char).toLowerCase() + '.png">').join("") + "</div>"
     }).join("")
     
   }
